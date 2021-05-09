@@ -1,34 +1,33 @@
-import animalService from "@/api/animal.service";
+import sponsorService from "@/api/sponsor.service";
 import { 
   // Actions
-  FETCH_ANIMALS, 
-  ADD_ANIMAL, 
-  EDIT_ANIMAL, 
-  REMOVE_ANIMAL, 
+  FETCH_SPONSORS, 
+  ADD_SPONSOR, 
+  EDIT_SPONSOR, 
+  REMOVE_SPONSOR, 
   // Mutations
-  SET_ANIMALS, 
-  SET_MESSAGE,
-  UPDATE_LIKES 
+  SET_SPONSORS, 
+  SET_MESSAGE
 } from "./sponsor.constants";
 
 const state = {
-  animals: []
+  sponsors: []
 };
 
 const getters = {
-  getAnimals: state => state.animals,
-  getAnimalsById: state => id => state.animals.find(animal => animal._id === id),
+  getSponsors: state => state.sponsors,
+  getSponsorById: state => id => state.sponsors.find(sponsor => sponsor._id === id),
   getMessage: state => state.message,
   
 };
 
 const actions = {
-  [FETCH_ANIMALS]: ({ commit, rootState }) => {
+  [FETCH_SPONSORS]: ({ commit, rootState }) => {
     return new Promise((resolve, reject) => {
-      animalService.getAnimals(rootState.auth.token)
+      sponsorService.getSponsors(rootState.auth.token)
         .then(
           res => {
-            commit(SET_ANIMALS, res.body);
+            commit(SET_SPONSORS, res.body);
             resolve(res)
           },
           err => {
@@ -37,25 +36,18 @@ const actions = {
           });
     })
   },
-  [ADD_ANIMAL]: ({ commit, rootState }, payload) => {
-    return new Promise((resolve, reject) => {
-      animalService.addAnimal(rootState.auth.token, payload)
-        .then(
-          res => {
-            commit(SET_MESSAGE, `O animal ${res.body.name} foi adicionado com sucesso!`);
-            resolve(res)
-          }, err => {
-            commit(SET_MESSAGE, err.message)
-            reject(err)
-          });
-    });
+  [ADD_SPONSOR]: ({ commit }) =>
+  {
+    res => {
+      commit(SET_MESSAGE, `O sponsor ${res.body.nome} foi adicionado com sucesso!`);
+    }
   },
-  [EDIT_ANIMAL]: ({ commit, rootState }, payload) => {
+  [EDIT_SPONSOR]: ({ commit, rootState }, payload) => {
     return new Promise((resolve, reject) => {
-      animalService.editAnimal(rootState.auth.token, payload)
+      sponsorService.editSponsor(rootState.auth.token, payload)
         .then(
           res => {
-            commit(SET_MESSAGE, `O animal ${res.body.name} foi atualizado com sucesso!`);
+            commit(SET_MESSAGE, `O sponsor ${res.body.nome} foi atualizado com sucesso!`);
             resolve(res)
           }, err => {
             commit(SET_MESSAGE, err)
@@ -63,11 +55,11 @@ const actions = {
           });
     });
   },
-  [REMOVE_ANIMAL]: ({ commit, rootState }, id) => {
+  [REMOVE_SPONSOR]: ({ commit, rootState }, id) => {
     return new Promise((resolve, reject) => {
-      animalService.removeAnimal(rootState.auth.token, id)
+      sponsorService.removeSponsor(rootState.auth.token, id)
         .then(res => {
-          commit(SET_MESSAGE, `O animal foi removido com sucesso!`);
+          commit(SET_MESSAGE, `O Sponsor foi removido com sucesso!`);
           resolve(res)
         }, err => {
           commit(SET_MESSAGE, err.message)
@@ -77,26 +69,9 @@ const actions = {
   }
 };
 
-export const mutations = {
-  [SET_ANIMALS]: (state, animals) => {
-    state.animals = animals;
-  },
-  [SET_MESSAGE]: (state, message) => {
-    state.message = message;
-  },
-  [UPDATE_LIKES]: (state, payload) => {
-    state.animals.forEach(animal => {
-      if(animal._id === payload.animalId) {
-        animal.evaluation.push(payload.userId)
-      }
-    });
-  }
-};
-
 export default {
   namespaced: true,
   state,
   getters,
-  actions,
-  mutations
+  actions
 }

@@ -2,7 +2,7 @@
   
   <section class="page-section">
     <b-container>
-      <HeaderPage title="Adicionar Sponsor"/>
+      <HeaderPage title="Adicionar Sponsor" />
      
       <!--FORM-->
       <b-row>
@@ -53,7 +53,7 @@
               <i class="fas fa-plus-square"></i> ADICIONAR
             </button>
             <router-link
-              :to="{name: 'listSponsor'}"
+              :to="{name: 'listSponsors'}"
               tag="button"
               class="btn btn-outline-danger btn-lg"
             >
@@ -68,13 +68,39 @@
 </template>
 
 <script>
-import HeaderPage from "@/components/HeaderPage.vue"
-
+import { ADD_SPONSOR } from "@/store/sponsor/sponsor.constants";
+import HeaderPage from "@/components/HeaderPage.vue";
+import router from "@/router";
+import { mapGetters } from "vuex";
 
 export default {
   name: "AddSponsor",
-   components: {
+  components: {
     HeaderPage
+  },
+  data: () => {
+    return {
+      Nome: "",
+      Contato: "",
+      Animal: "",
+      Valor: ""
+    };
+  },
+  computed: {
+    ...mapGetters("sponsor", ["getMessage"])
+  },
+  methods: {
+    add() {
+      this.$store.dispatch(`sponsor/${ADD_SPONSOR}`, this.$data).then(
+        () => {
+          this.$alert(this.getMessage, "Sponsor adicionado!", "success");
+          router.push({ name: "listSponsors" });
+        },
+        err => {
+          this.$alert(`${err.message}`, "Erro", "error");
+        }
+      );
+    }
   }
 };
 </script>
