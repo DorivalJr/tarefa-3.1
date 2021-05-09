@@ -68,39 +68,13 @@
 </template>
 
 <script>
-import { ADD_EXPERT } from "@/store/experts/expert.constants";
 import HeaderPage from "@/components/HeaderPage.vue"
-import router from "@/router";
-import { mapGetters } from "vuex";
+
 
 export default {
   name: "AddExpert",
    components: {
     HeaderPage
-  },
-  data: () => {
-    return {
-      Nome: "",
-      Contato: "",
-      Especie: "",
-      Familia: ""
-    };
-  },
-  computed: {
-    ...mapGetters("expert", ["getMessage"])
-  },
-  methods: {
-    add() {
-      this.$store.dispatch(`expert/${ADD_EXPERT}`, this.$data).then(
-        () => {
-          this.$alert(this.getMessage, "Expert adicionado!", "success");
-          router.push({ name: "listExperts" });
-        },
-        err => {
-          this.$alert(`${err.message}`, "Erro", "error");
-        }
-      );
-    }
   }
 };
 </script>
